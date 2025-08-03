@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
         // Get and store the Rigidbody component attached to the player.
         rb = GetComponent<Rigidbody>();
         winTextObject.SetActive(false);
-        count = 0; 
+        count = 0;
 
         SetCountText();
     }
@@ -44,11 +44,13 @@ public class PlayerController : MonoBehaviour
     void SetCountText()
     {
         countText.text = "Count: " + count.ToString();
-        
-         if (count >= 7)
+
+        if (count >= 1)
         {
+            Destroy(GameObject.FindGameObjectWithTag("Enemy"));
             winTextObject.SetActive(true);
         }
+
     }
     // FixedUpdate is called once per fixed frame-rate frame.
     private void FixedUpdate()
@@ -59,15 +61,28 @@ public class PlayerController : MonoBehaviour
         // Apply force to the Rigidbody to move the player.
         rb.AddForce(movement * speed);
     }
-    
 
-     void OnTriggerEnter(Collider other) 
-   {
-      if (other.gameObject.CompareTag("PickUp")) 
-       {
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("PickUp"))
+        {
             SetCountText();
-           count = count + 1;
-           other.gameObject.SetActive(false);
-       }
-   }
+            count = count + 1;
+            other.gameObject.SetActive(false);
+        }
+    }
+   
+   private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            // Destroy the current object
+            Destroy(gameObject); 
+            // Update the winText to display "You Lose!"
+            winTextObject.gameObject.SetActive(true);
+            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!";
+        }
+    }
+
 }
