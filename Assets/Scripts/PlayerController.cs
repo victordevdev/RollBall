@@ -3,24 +3,31 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     // Rigidbody of the player.
     private Rigidbody rb;
-
+    private int count;
     // Movement along X and Y axes.
     private float movementX;
     private float movementY;
 
     // Speed at which the player moves.
     public float speed = 0;
+    public TextMeshProUGUI countText;
+    public GameObject winTextObject;
 
     // Start is called before the first frame update.
     void Start()
     {
         // Get and store the Rigidbody component attached to the player.
         rb = GetComponent<Rigidbody>();
+        winTextObject.SetActive(false);
+        count = 0; 
+
+        SetCountText();
     }
 
     // This function is called when a move input is detected.
@@ -34,6 +41,15 @@ public class PlayerController : MonoBehaviour
         movementY = movementVector.y;
     }
 
+    void SetCountText()
+    {
+        countText.text = "Count: " + count.ToString();
+        
+         if (count >= 7)
+        {
+            winTextObject.SetActive(true);
+        }
+    }
     // FixedUpdate is called once per fixed frame-rate frame.
     private void FixedUpdate()
     {
@@ -49,6 +65,8 @@ public class PlayerController : MonoBehaviour
    {
       if (other.gameObject.CompareTag("PickUp")) 
        {
+            SetCountText();
+           count = count + 1;
            other.gameObject.SetActive(false);
        }
    }
